@@ -1,0 +1,9 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/Scripts/python.exe",
+  "python.terminal.activateEnvironment": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["backend/app/tests"],
+  "python.testing.cwd": "${workspaceFolder}/backend",
+  "editor.formatOnSave": true,
+  "files.eol": "\n"
+}

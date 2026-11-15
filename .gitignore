@@ -1,0 +1,100 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Secrets and local data: NEVER commit
+.env
+.env.*
+!.env.example
+backend/media_files/*
+!backend/media_files/.gitkeep
+
+# Node
+node_modules/
+.next/
+next-env.d.ts
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# =================(
+# Global / OS-specific
+# =================
+.DS_Store
+Thumbs.db
+*.log
+
+# =================
+# IDE & Editors
+# =================
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# =================
+# Environment & Secrets
+# =================
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# =================
+# Python / Backend (FastAPI / Django / Flask)
+# =================
+backend/.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+htmlcov/
+*.egg-info/
+dist/
+build/
+backend/media_files/*
+!backend/media_files/.gitkeep
+
+# =================
+# Node.js / Frontend (Next.js / React)
+# =================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yaml
+.pnp.*
+
+# =================
+# Testing & E2E
+# =================
+frontend/playwright-report/
+frontend/test-results/
+frontend/cypress/videos/
+frontend/cypress/screenshots/
+
+# =================
+# Docker & Deployment
+# =================
+.dockerignore

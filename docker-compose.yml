@@ -1,0 +1,33 @@
+# Local development infrastructure. The API and the web app run on your machine
+# (venv + npm) so you get fast reloads; only the backing services run in Docker.
+#
+#   docker compose up -d
+#
+# Postgres: localhost:5432   Redis: localhost:6379   Mailpit (fake inbox): http://localhost:8025
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: y
+      POSTGRES_PASSWORD: y_dev_pass
+      POSTGRES_DB: y
+    ports: ["127.0.0.1:5433:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U y -d y"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    ports: ["127.0.0.1:6379:6379"]
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:8025:8025"   # web inbox
+      - "127.0.0.1:1025:1025"   # SMTP
+
+volumes:
+  pgdata:

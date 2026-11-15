@@ -1,0 +1,81 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: y
+          POSTGRES_PASSWORD: y_ci_pass
+          POSTGRES_DB: y_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U y -d y_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Throwaway values for the CI container only: not real secrets.
+      TEST_DATABASE_URL: postgresql+asyncpg://y:y_ci_pass@localhost:5432/y_test
+      DATABASE_URL: postgresql+asyncpg://y:y_ci_pass@localhost:5432/y_test
+      JWT_SECRET_KEY: ci-only-throwaway-secret-key-0123456789-abcdef
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Migrations apply cleanly (up, down, up)
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+      - name: Models and migrations are in sync
+        run: alembic check
+      - name: Tests with coverage
+        run: pytest --cov --cov-report=term-missing --cov-report=xml --cov-fail-under=60
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: backend/coverage.xml
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # After you commit package-lock.json, switch this to `npm ci` (faster, reproducible).
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+        env:
+          BACKEND_URL: http://localhost:8001
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -t circkle-backend ./backend
+      - name: Build frontend image
+        run: docker build -t circkle-frontend ./frontend

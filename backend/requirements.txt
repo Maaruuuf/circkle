@@ -1,0 +1,17 @@
+# Runtime dependencies. Ranges keep the file readable; for a fully reproducible
+# build generate a lock file later (see docs/DEPLOYMENT.md, "Dependency locking").
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+sqlalchemy[asyncio]>=2.0.30,<2.1
+asyncpg>=0.29
+alembic>=1.13
+pydantic[email]>=2.7,<3
+pydantic-settings>=2.3
+argon2-cffi>=23.1
+pyjwt>=2.8
+python-multipart>=0.0.9
+httpx>=0.27
+redis>=5.0
+pillow>=10.3
+boto3>=1.34
+sentry-sdk>=2.0

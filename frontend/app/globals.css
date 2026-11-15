@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Color tokens as "R G B" triplets so Tailwind can add opacity (bg-brand/20). */
+:root {
+  --canvas: 239 233 222;
+  --surface: 251 248 243;
+  --surface2: 244 239 231;
+  --line: 221 213 199;
+  --ink: 20 20 20;
+  --muted: 110 103 93;
+  --brand: 217 83 30;
+  --brand-soft: 250 226 214;
+  --danger: 185 28 28;
+  --danger-soft: 253 232 232;
+  --success: 21 128 61;
+  --success-soft: 226 244 232;
+  color-scheme: light;
+}
+
+.dark {
+  --canvas: 18 17 16;
+  --surface: 28 26 24;
+  --surface2: 38 35 32;
+  --line: 54 50 45;
+  --ink: 243 238 230;
+  --muted: 160 152 141;
+  --brand: 240 106 53;
+  --brand-soft: 66 35 23;
+  --danger: 248 113 113;
+  --danger-soft: 66 30 30;
+  --success: 74 222 128;
+  --success-soft: 25 54 37;
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-canvas font-sans text-ink antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--brand));
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgb(var(--brand) / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

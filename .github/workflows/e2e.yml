@@ -1,0 +1,69 @@
+# End-to-end browser tests against the real stack. Run it by hand:
+# GitHub -> Actions -> "E2E" -> Run workflow. (It is slower, so it is not on every push.)
+name: E2E
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"   # every Monday 03:00 UTC
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: y
+          POSTGRES_PASSWORD: y_ci_pass
+          POSTGRES_DB: y
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U y -d y"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+asyncpg://y:y_ci_pass@localhost:5432/y
+      JWT_SECRET_KEY: ci-only-throwaway-secret-key-0123456789-abcdef
+      COOKIE_SECURE: "false"
+      EMAIL_BACKEND: console
+      RATE_LIMIT_ENABLED: "false"
+      FRONTEND_URL: http://localhost:3000
+      CORS_ORIGINS: http://localhost:3000
+      BACKEND_URL: http://localhost:8001
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Start backend
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt
+          alembic upgrade head
+          nohup uvicorn app.main:app --port 8001 > backend.log 2>&1 &
+      - name: Build and start frontend
+        working-directory: frontend
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+          nohup npm start > frontend.log 2>&1 &
+          npx playwright install --with-deps chromium
+      - name: Wait for services
+        run: |
+          for i in $(seq 1 30); do curl -sf http://localhost:8001/health && curl -sf http://localhost:3000 && exit 0; sleep 2; done
+          exit 1
+      - name: Run Playwright
+        working-directory: frontend
+        run: npx playwright test --project=chromium
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-report
+          path: |
+            frontend/playwright-report
+            backend/backend.log
+            frontend/frontend.log
