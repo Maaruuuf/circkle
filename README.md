@@ -1,5 +1,4 @@
-<img width="1351" height="632" alt="Screenshot 2026-11-15 200347" src="https://github.com/user-attachments/assets/ac9b0219-9639-4e96-b9b3-6fa2b7e99070" />
-<img width="1352" height="630" alt="Screenshot 2026-11-15 200612" src="https://github.com/user-attachments/assets/b30d1629-abea-4882-b191-81f4a3ef40b9" />
+
 # Circkle
 
 A small Instagram-style social network: register/login, profiles, follow, text + image posts, comments and reactions.
@@ -42,4 +41,5 @@ npm install
 npm run dev                                 # http://localhost:3000
 ```
 
-
+<img width="1351" height="632" alt="Screenshot 2026-11-15 200347" src="https://github.com/user-attachments/assets/ac9b0219-9639-4e96-b9b3-6fa2b7e99070" />
+<img width="1352" height="630" alt="Screenshot 2026-11-15 200612" src="https://github.com/user-attachments/assets/b30d1629-abea-4882-b191-81f4a3ef40b9" />
